@@ -17,7 +17,7 @@ title: Big Data Tutorials Lake
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
  Learn Big Data by checking out real examples and best practices for developing with Hadoop, Hive, NoSQL, HBASE, HDFS and more.
-baseurl: "" # the subpath of your site, e.g. /blog #change to bigdatatutorialslakelater
+baseurl: "/blog" # the subpath of your site, e.g. /blog #change to bigdatatutorialslakelater
 url: "comming_soon" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: comming_soon
 github_username:  comming_soon
