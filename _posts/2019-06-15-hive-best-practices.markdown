@@ -14,7 +14,7 @@ We will discuss these areas in detail below.
 
 The data consists of three tables. The table Airline Bookings All contains 276 million records of complete air travel trips from an origin to a destination with an itinerary identifier as key. The second table Airline Bookings Origin Only contains the data for the first leg of an itinerary only and also has the itinerary’s identifier as a key. The last table is ‘Census’ containing population information for each US state.
 
-![Airline booking](/assets/airline-booking.jpg)
+![Airline booking](/bigdatatutorialslake/assets/airline-booking.jpg)
 
 This example data set demonstrates Hive query language optimization.
 
@@ -24,7 +24,7 @@ For example, common approaches to slice the airline data may be by origin state 
 
 This enables us to define at creation time of the table the state column to be a partition. Consequently, when we write data to the table the data will be written in sub-directories named by state (abbreviations). Subsequently, queries filtering by origin state, e.g. SELECT * FROM Airline_Bookings_All WHERE origin_state = ‘CA’, allow Hive to skip all but the relevant sub-directories and data files. This can lead to tremendous reduction in data required to read and filter in the initial map stage. This reduces the number of mappers, IO operations, and time to answer the query.
 
-![Partitioned](/assets/patritioned.jpg)
+![Partitioned](/bigdatatutorialslake/assets/patritioned.jpg)
 
 Example Hive table partitioning It is important to consider the cardinality of a potential partition column and avoid fragmenting the data too much. Itinerary ID would be a very poor choice for partitioning. Queries for single itineraries by ID would be very fast but any other query would require to parse a huge amount of directories and files incurring serious overheads.
 
@@ -34,7 +34,7 @@ Additionally, HDFS uses a very large block size of usually 64 MB or more which m
 
 A simple trick to do this is to hash the data and store it by hash results, which is what bucketing does.
 
-![Bucketing](/assets/31.jpg)
+![Bucketing](/bigdatatutorialslake/assets/31.jpg)
 
 Example Hive query table bucketing Bucketing requires us to tell Hive at table creation time by which column to cluster by and into how many buckets. We also have to ensure the bucketing flag is set (SET hive.enforce.bucketing=true;) every time before we write data to the bucketed table.
 
@@ -42,7 +42,7 @@ Importantly, the corresponding tables we want to join on have to be set up in th
 
 The SELECT statement then can include a MAPJOIN statement to ensure that the join operation is executed at the map stage by combining only the few relevant files in each mapper task in a distributed fashion from the two tables instead of parsing the full tables.   Example Hive MAPJOIN with bucketing
 
-![Bucket map](/assets/bucketmap.jpg)
+![Bucket map](/bigdatatutorialslake/assets/bucketmap.jpg)
 
 **Tip 3: Bucket Sampling** Once our tables are setup with these buckets we can address another important use-case. We often want to query large table joins for a sample. We may want to try out complex queries or explore the data, and we want to do this iteratively, swiftly, and not process the whole data set.
 
@@ -50,7 +50,7 @@ This is particularly difficult because of the joining of the tables since only v
 
 The bucketing on the join column enables us to join specific buckets from two tables with data overlapping on the join column. Effectively, we execute exactly one part of the complete join operation and only incur the cost of it. The hashing function on the ID has the additional benefit of a (somewhat) random nature providing a representative sample.
 
-![Sampling](/assets/table-sample.jpg)
+![Sampling](/bigdatatutorialslake/assets/table-sample.jpg)
 
 Example Hive TABLESAMPLE on bucketed tables
 
@@ -64,7 +64,7 @@ A query using 1% of the data using TABLESAMPLE(1 PERCENT) on a large table will 
 
 They then can take advantage of spare capacity on a cluster and improve cluster utilization while at the same time reduce the overall query executions time. The configuration in Hive to change this behaviour is a merely switching a single flag SET hive.exce.parallel=true;.
 
-![Parallel execution](/assets/parallel.jpg)
+![Parallel execution](/bigdatatutorialslake/assets/parallel.jpg)
 
 Example of Hive parallel stage execution of a query In our example in the image above we can see that the two sub-queries are independent and when we enable parallel execution are processed at the same time.
 
